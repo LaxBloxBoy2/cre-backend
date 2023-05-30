@@ -10,6 +10,14 @@ This repository has been cleaned to remove large files that were causing issues 
 
 The repository was cleaned by creating a new branch without history and then force-pushing it to GitHub. This approach completely removes the large files from the Git history.
 
+### Repository Structure
+
+This repository contains:
+- Backend API code (FastAPI)
+- Database models and schemas
+- AI components for fund optimization
+- Deployment scripts
+
 ## Fund Optimizer System
 
 A system that uses AI simulation and reinforcement learning to generate multi-year action plans for maximizing fund IRR while maintaining DSCR constraints.
