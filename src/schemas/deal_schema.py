@@ -3,7 +3,7 @@ from typing import Optional, Dict, Any, List, Literal
 from datetime import datetime
 import uuid
 
-from ..property_attributes_schema import PropertyAttributes
+from .property_attributes_schema import PropertyAttributes
 
 
 # Keep the original models for backward compatibility

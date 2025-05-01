@@ -9,9 +9,9 @@ from ..models.chat import ChatMessage
 from ..models.user import User
 from ..schemas.ai_chat_schema import ChatMessage as ChatMessageSchema
 from ..schemas.chat_schema import ChatMessageResponse
-from ..action_detection_service import extract_action_from_reply, execute_action
-from ..conversation_state_service import get_or_create_conversation_state
-from ..workflow_service import detect_workflow_intent, process_workflow_step
+from .action_detection_service import extract_action_from_reply, execute_action
+from .conversation_state_service import get_or_create_conversation_state
+from .workflow_service import detect_workflow_intent, process_workflow_step
 
 async def generate_deal_system_message(deal: Deal) -> str:
     """

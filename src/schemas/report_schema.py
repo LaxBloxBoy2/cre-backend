@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-from ..underwriting_schema import UnderwritingRequest
+from .underwriting_schema import UnderwritingRequest
 
 
 class ReportRequest(UnderwritingRequest):

@@ -10,7 +10,7 @@ from ..models.user import User
 from ..models.lease_analysis import LeaseAnalysis
 from ..schemas.ai_chat_schema import AskAnythingRequest, AskAnythingResponse
 from ..utils.logging_utils import get_logger
-from ..security_service import validate_deal_access
+from .security_service import validate_deal_access
 
 # Get logger
 logger = get_logger(__name__)

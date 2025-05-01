@@ -2,8 +2,8 @@ from fastapi import HTTPException, Depends
 from typing import Optional, List, Dict
 from sqlalchemy.orm import Session
 from ..schemas.portfolio_schema import PortfolioSummaryResponse
-from ..deal_service import get_deals
-from ..auth_service_db import get_current_active_user
+from .deal_service import get_deals
+from .auth_service_db import get_current_active_user
 from ..schemas.user_schema import User
 
 async def get_portfolio_summary(db: Session, user: Optional[User] = None) -> PortfolioSummaryResponse:

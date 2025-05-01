@@ -9,7 +9,7 @@ from ..database import get_db
 from ..models.user import User as UserModel
 from ..schemas.user_schema import User, UserCreate, UserUpdate
 from ..schemas.auth_schema import TokenData
-from ..user_service import get_user_by_email, create_user as create_user_service, verify_password
+from .user_service import get_user_by_email, create_user as create_user_service, verify_password
 from ..utils.jwt_handler import (
     create_access_token, create_refresh_token,
     decode_access_token, decode_refresh_token,

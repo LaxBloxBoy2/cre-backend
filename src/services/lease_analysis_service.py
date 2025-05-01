@@ -12,8 +12,8 @@ from ..models.lease_analysis import LeaseAnalysis
 from ..models.deal import Deal
 from ..models.user import User
 from ..schemas.lease_schema import UploadedFileCreate, LeaseAnalysisCreate, LeaseAnalysisBase
-from ..notification_service import create_document_upload_notification
-from ..activity_log_service import log_action
+from .notification_service import create_document_upload_notification
+from .activity_log_service import log_action
 from ..utils.file_utils import validate_file_size, validate_file_type, get_safe_upload_path, save_file
 
 # Import text extraction libraries

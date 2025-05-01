@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List
-from ..underwriting_schema import UnderwritingRequest
+from .underwriting_schema import UnderwritingRequest
 
 
 class RiskRequest(UnderwritingRequest):
@@ -13,7 +13,7 @@ class RiskResponse(BaseModel):
     project_name: str = Field(..., description="The name of the project")
     location: str = Field(..., description="The location of the property")
     property_type: str = Field(..., description="The type of property")
-    
+
     # Financial inputs
     acquisition_price: float = Field(..., description="The acquisition price of the property")
     construction_cost: float = Field(..., description="The construction cost of the property")
@@ -22,13 +22,13 @@ class RiskResponse(BaseModel):
     vacancy_rate: float = Field(..., description="The vacancy rate as a percentage")
     operating_expenses_per_sf: float = Field(..., description="The operating expenses per square foot")
     exit_cap_rate: float = Field(..., description="The exit capitalization rate as a percentage")
-    
+
     # Calculated values
     net_operating_income: float = Field(..., description="The net operating income")
     project_cost: float = Field(..., description="The total project cost")
     estimated_exit_value: float = Field(..., description="The estimated exit value")
     development_margin: float = Field(..., description="The development margin as a percentage")
-    
+
     # Risk assessment
     risk_score: str = Field(..., description="The risk score (Low, Medium, High)")
     flags: List[str] = Field(..., description="List of risk flags or concerns")
