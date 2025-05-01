@@ -22,8 +22,16 @@ This repository contains:
 
 To get started with this repository:
 1. Clone the repository
-2. Install dependencies with `pip install -r requirements.txt`
-3. Run the server with `python backend/main.py`
+2. Install dependencies with `pip install -r cre_platform_backend/requirements.txt`
+3. Run the server with `cd cre_platform_backend && uvicorn main:app --reload`
+
+### Deployment
+
+This repository is configured for deployment on Render using the `render.yaml` file. The deployment uses the full backend implementation from the `cre_platform_backend` directory.
+
+The deployed API is available at:
+- API: https://cre-backend-0pvq.onrender.com/
+- Documentation: https://cre-backend-0pvq.onrender.com/docs
 
 ## Fund Optimizer System
 
