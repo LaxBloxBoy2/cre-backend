@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-import risk  # import the local risk-score module
+from . import risk  # import the local risk-score module from the current directory
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
