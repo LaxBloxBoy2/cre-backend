@@ -3,7 +3,9 @@ services:
   - type: web
     name: cre-backend
     env: python
-    buildCommand: cd cre_platform_backend && pip install -r requirements.txt
+    buildCommand: |
+      pip install -r requirements.txt
+      cd cre_platform_backend && pip install -r requirements.txt
     startCommand: cd cre_platform_backend && uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
