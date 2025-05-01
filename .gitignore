@@ -1,0 +1,61 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+.env
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Large files that exceed GitHub's limits
+*.exe
+*.node
+*.dll
+*.so
+*.dylib
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.iso
+*.bin
+*.dmg
+*.pkg
+*.deb
+*.rpm
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Specific problematic files
+export_movementdemo_file_size_test.exe
+node_modules/@next/swc-win32-x64-msvc/next-swc.win32-x64-msvc.node

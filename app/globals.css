@@ -1,0 +1,462 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes progress-shine {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+.animate-progress-shine {
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 25%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% auto;
+  animation: progress-shine 2s linear infinite;
+}
+
+@keyframes progress-pulse {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 0.6;
+    transform: scale(0.8);
+  }
+}
+
+.animate-progress-pulse {
+  animation: progress-pulse 1.5s ease-in-out infinite;
+}
+
+:root {
+  /* Dark theme (default) */
+  --bg-primary: #0F1117;
+  --bg-card: #1A1D23;
+  --bg-card-light: #1A1D23;
+  --bg-card-hover: #22272E;
+  --bg-card-hover-light: #22272E;
+  --bg-card-hover-lighter: #1E2229;
+  --bg-card-hover-darker: #2A2E36;
+  --text-primary: #E5E7EB;
+  --text-primary-darker: #FFFFFF;
+  --text-secondary: #9CA3AF;
+  --text-muted: #9CA3AF;
+  --accent: #00F0B4;
+  --accent-gradient-from: #30E3CA;
+  --accent-gradient-to: #11999E;
+  --accent-gradient: linear-gradient(135deg, #00f0b45c 0%, #00f0b408 100%);
+  --shadow-neon: 0 0 15px 3px rgba(0, 240, 180, 0.5);
+  --border-dark: #2F374A;
+  --border-light: #2F374A;
+  --border-color: #2F374A;
+  --border-input: #2F374A;
+  --destructive: #FF4D4F;
+  --destructive-light: rgba(255, 77, 79, 0.1);
+  --transition-theme: background-color 150ms ease, color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+  --bg-input: #1E222A;
+  --bg-error: rgba(255, 77, 79, 0.1);
+  --border-error: rgba(255, 77, 79, 0.3);
+  --text-error: #FF4D4F;
+
+  /* Additional dark theme variables */
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --hover-bg: rgba(0, 240, 180, 0.1);
+  --button-text: #FFFFFF;
+  --button-text-dark: #0F1117;
+
+  /* Pipeline specific variables */
+  --pipeline-column-bg: rgba(34, 39, 46, 0.3);
+  --pipeline-card-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --pipeline-card-hover-shadow: 0 0 12px rgba(0, 240, 180, 0.3);
+  --pipeline-drag-overlay-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='light'] {
+  /* Light theme */
+  --bg-primary: #F4F6F8;
+  --bg-card: #FFFFFF;
+  --bg-card-light: #FFFFFF;
+  --bg-card-hover: #F0F4F4;
+  --bg-card-hover-light: #F0F4F4;
+  --bg-card-hover-lighter: #F7F9FB;
+  --bg-card-hover-darker: #E2E8F0;
+  --text-primary: #111827;
+  --text-primary-darker: #000000;
+  --text-secondary: #4B5563;
+  --text-muted: #4B5563;
+  --accent: #00C79A;
+  --accent-gradient-from: #00C79A;
+  --accent-gradient-to: #00A080;
+  --accent-gradient: linear-gradient(135deg, #00c79a33 0%, #00c79a05 100%);
+  --shadow-neon: 0 0 12px 3px rgba(0, 199, 154, 0.3);
+  --border-dark: #E2E8F0;
+  --border-light: #E2E8F0;
+  --border-color: #E2E8F0;
+  --border-input: #D1D5DB;
+  --destructive: #D32F2F;
+  --destructive-light: rgba(211, 47, 47, 0.08);
+  --bg-input: #F9FAFB;
+  --bg-error: rgba(211, 47, 47, 0.08);
+  --border-error: rgba(211, 47, 47, 0.3);
+  --text-error: #D32F2F;
+
+  /* Additional light theme variables */
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --hover-bg: rgba(0, 199, 154, 0.08);
+  --button-text: #FFFFFF;
+  --button-text-dark: #111827;
+
+  /* Pipeline specific variables */
+  --pipeline-column-bg: rgba(240, 244, 244, 0.6);
+  --pipeline-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --pipeline-card-hover-shadow: 0 0 8px rgba(0, 199, 154, 0.2);
+  --pipeline-drag-overlay-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+@layer base {
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    transition: var(--transition-theme);
+  }
+
+  /* Apply theme transitions to common elements */
+  a, button, input, select, textarea, div, span, p, h1, h2, h3, h4, h5, h6 {
+    transition: var(--transition-theme);
+  }
+
+  /* Remove default focus outline and replace with custom styling */
+  input:focus, textarea:focus, select:focus, button:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 1px var(--accent) !important;
+    border-color: var(--accent) !important;
+  }
+
+  /* Remove default blue outline in Chrome, Safari, and Firefox */
+  input, textarea, select, button {
+    outline: none !important;
+  }
+
+  .dark-card {
+    background-color: var(--bg-card);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid transparent;
+    transition: var(--transition-theme);
+  }
+
+  .dark-card:hover {
+    box-shadow: var(--shadow-neon);
+    border-color: var(--accent);
+  }
+
+  .gradient-button {
+    background: linear-gradient(to right, var(--accent-gradient-from), var(--accent-gradient-to));
+    color: white;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+  }
+
+  .gradient-button:hover {
+    box-shadow: var(--shadow-neon);
+    transform: scale(1.05);
+  }
+
+  .sidebar-icon {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    color: var(--text-muted);
+    transition: var(--transition-theme);
+  }
+
+  .sidebar-icon:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-card-hover);
+  }
+
+  .sidebar-icon.active {
+    color: var(--accent);
+    background-color: var(--bg-card-hover);
+  }
+}
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-end-rgb));
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInFromRight {
+  from { transform: translateX(20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInFromBottom {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 0 0 rgba(54, 255, 176, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(54, 255, 176, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(54, 255, 176, 0); }
+}
+
+@keyframes ping-once {
+  0% { transform: scale(1); opacity: 0.3; }
+  70% { transform: scale(2); opacity: 0; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+@keyframes strikethrough {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes complete-task {
+  0% { transform: translateX(0); opacity: 1; }
+  20% { transform: translateX(10px); opacity: 0.8; }
+  100% { transform: translateX(-100%); opacity: 0; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.animate-slideInFromRight {
+  animation: slideInFromRight 0.3s ease-in-out;
+}
+
+.animate-slideInFromBottom {
+  animation: slideInFromBottom 0.3s ease-in-out;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+.animate-ping-once {
+  animation: ping-once 1s cubic-bezier(0, 0, 0.2, 1) forwards;
+}
+
+.animate-complete-task {
+  animation: complete-task 0.5s ease-in-out forwards;
+}
+
+/* Hide scrollbar but allow scrolling */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Sidebar collapsed state */
+.sidebar-collapsed .link-label {
+  display: none;
+}
+
+.sidebar {
+  width: 240px;
+  transition: width 150ms ease-in-out;
+  overflow-x: hidden;
+}
+
+.sidebar-collapsed {
+  width: 72px !important;
+  overflow-x: visible;
+}
+
+/* Hide text in sidebar when collapsed */
+.sidebar-collapsed span:not(.w-6):not(.h-6):not(.ml-2):not(.px-2):not(.py-1) {
+  display: none;
+}
+
+/* Hide all dropdown arrows in collapsed state */
+.sidebar-collapsed svg.h-4.w-4,
+.sidebar-collapsed svg.h-5.w-5:not(:first-child),
+.sidebar-collapsed button svg:nth-child(2),
+.sidebar-collapsed svg.rotate-90,
+.sidebar-collapsed svg.transform.rotate-180 {
+  display: none !important;
+}
+
+/* Ensure icons maintain minimum size when sidebar is collapsed */
+.sidebar-collapsed svg {
+  min-width: 24px !important;
+  min-height: 24px !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+
+/* Create uniform icon wrapper in collapsed state */
+.sidebar-collapsed .flex.items-center {
+  justify-content: center !important;
+  width: 48px !important;
+  height: 48px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+}
+
+/* Fix active item glow in collapsed mode */
+.sidebar-collapsed .shadow-accent-glow {
+  box-shadow: 0 0 8px #00f0b4 !important;
+  background-color: transparent !important;
+}
+
+.sidebar-collapsed a.bg-dark-card-hover,
+.sidebar-collapsed button.bg-dark-card-hover {
+  background-color: transparent !important;
+  border-radius: 50% !important;
+}
+
+/* Show tooltips for collapsed sidebar */
+.sidebar-collapsed .group:hover .group-hover\:sidebar-collapsed\:block {
+  display: block;
+}
+
+/* Flyout menu for dropdowns when sidebar is collapsed */
+.sidebar-collapsed .space-y-1:hover .pl-10 {
+  display: block;
+  position: absolute;
+  left: 72px;
+  top: 0;
+  width: 200px;
+  background-color: var(--bg-card);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-dark);
+  z-index: 50;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-card);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-dark);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--accent);
+  opacity: 0.7;
+}
+
+/* Light theme pattern for accent areas */
+[data-theme='light'] .pattern-dots {
+  background-image: radial-gradient(var(--accent) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-position: 0 0;
+  opacity: 0.05;
+}
+
+/* Tab styling */
+[data-state="active"] {
+  background-color: var(--bg-card) !important;
+}
+
+/* Fix for white text on white background in light theme */
+[data-theme='light'] .text-white {
+  color: var(--text-primary) !important;
+}
+
+/* Ensure proper contrast in light theme */
+[data-theme='light'] .bg-gradient-to-r.text-white {
+  color: white !important;
+}

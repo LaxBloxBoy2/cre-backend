@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fund Optimizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #0F1117;
+            color: #E5E7EB;
+        }
+        .accent {
+            color: #36FFB0;
+        }
+        .accent-bg {
+            background-color: #36FFB0;
+            color: #0F1117;
+        }
+        .card {
+            background-color: #1A1D23;
+            border: 1px solid #2D3748;
+            border-radius: 0.5rem;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: linear-gradient(to right, #36FFB0, #00C79A);
+            color: #0F1117;
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+            box-shadow: 0 0 10px rgba(54, 255, 176, 0.5);
+        }
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid #4B5563;
+            color: #E5E7EB;
+        }
+        .btn-secondary:hover {
+            border-color: #36FFB0;
+        }
+        .input {
+            background-color: #2D3748;
+            border: 1px solid #4B5563;
+            color: #E5E7EB;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            width: 100%;
+        }
+        .input:focus {
+            outline: none;
+            border-color: #36FFB0;
+        }
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .badge-blue {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: #60A5FA;
+        }
+        .badge-green {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #34D399;
+        }
+        .badge-yellow {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: #FBBF24;
+        }
+        .badge-red {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #F87171;
+        }
+        .timeline-line {
+            position: absolute;
+            left: 1rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #2D3748;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 1rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 9999px;
+            background-color: #36FFB0;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto py-8 px-4">
+        <h1 class="text-3xl font-bold mb-8">Fund Optimizer</h1>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Start Optimization Form -->
+            <div class="lg:col-span-1">
+                <div class="card p-6 mb-6">
+                    <h2 class="text-xl font-bold mb-4">Start Optimization</h2>
+                    <form id="optimizationForm" class="space-y-4">
+                        <div>
+                            <label class="block mb-1">Fund ID</label>
+                            <input type="text" id="fundId" class="input" value="123e4567-e89b-12d3-a456-426614174000">
+                        </div>
+                        <div>
+                            <label class="block mb-1">Target Horizon (Years)</label>
+                            <input type="number" id="horizonYears" class="input" value="5" min="1" max="10">
+                        </div>
+                        <div>
+                            <label class="block mb-1">Min DSCR</label>
+                            <input type="number" id="minDscr" class="input" value="1.25" step="0.01" min="1">
+                        </div>
+                        <div>
+                            <label class="block mb-1">Max Leverage</label>
+                            <input type="number" id="maxLeverage" class="input" value="0.75" step="0.01" max="1">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-full">Optimize Fund</button>
+                    </form>
+                </div>
+                
+                <div class="card p-6">
+                    <h2 class="text-xl font-bold mb-4">Recent Optimizations</h2>
+                    <div id="recentRuns" class="space-y-3">
+                        <p class="text-gray-400">No recent optimizations</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results Panel -->
+            <div class="lg:col-span-2">
+                <div id="loadingPanel" class="card p-6 hidden">
+                    <div class="flex items-center justify-center space-x-4">
+                        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-accent"></div>
+                        <p>Optimization in progress...</p>
+                    </div>
+                    <div class="mt-4">
+                        <div class="w-full bg-gray-700 rounded-full h-2.5">
+                            <div id="progressBar" class="bg-accent h-2.5 rounded-full" style="width: 0%"></div>
+                        </div>
+                        <p id="statusText" class="text-sm text-gray-400 mt-2">Starting optimization...</p>
+                    </div>
+                </div>
+                
+                <div id="resultsPanel" class="hidden">
+                    <div class="card p-6 mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold">Optimization Results</h2>
+                            <span id="resultStatus" class="badge badge-blue">Pending</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div class="card p-4">
+                                <p class="text-sm text-gray-400">Baseline IRR</p>
+                                <p id="baselineIrr" class="text-2xl font-bold">-</p>
+                            </div>
+                            <div class="card p-4">
+                                <p class="text-sm text-gray-400">Optimized IRR</p>
+                                <p id="optimizedIrr" class="text-2xl font-bold accent">-</p>
+                            </div>
+                            <div class="card p-4">
+                                <p class="text-sm text-gray-400">Improvement</p>
+                                <p id="irrImprovement" class="text-2xl font-bold text-green-400">-</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="card p-4">
+                                <p class="text-sm text-gray-400">Optimization Horizon</p>
+                                <p id="horizon" class="font-medium">-</p>
+                            </div>
+                            <div class="card p-4">
+                                <p class="text-sm text-gray-400">Constraints</p>
+                                <p id="constraints" class="font-medium">-</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card p-6">
+                        <h2 class="text-xl font-bold mb-4">Recommended Actions</h2>
+                        <div id="actionsTimeline" class="relative pl-8">
+                            <div class="timeline-line"></div>
+                            <p id="noActions" class="text-gray-400">No actions recommended</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Store recent runs
+        const recentRuns = [];
+        let currentRunId = null;
+        let pollingInterval = null;
+        
+        // DOM elements
+        const optimizationForm = document.getElementById('optimizationForm');
+        const loadingPanel = document.getElementById('loadingPanel');
+        const resultsPanel = document.getElementById('resultsPanel');
+        const progressBar = document.getElementById('progressBar');
+        const statusText = document.getElementById('statusText');
+        const recentRunsEl = document.getElementById('recentRuns');
+        
+        // Format currency
+        const formatCurrency = (value) => {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                maximumFractionDigits: 0
+            }).format(value);
+        };
+        
+        // Format percentage
+        const formatPercent = (value) => {
+            return new Intl.NumberFormat('en-US', {
+                style: 'percent',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(value);
+        };
+        
+        // Get badge class based on status
+        const getStatusBadgeClass = (status) => {
+            switch (status) {
+                case 'pending': return 'badge-blue';
+                case 'running': return 'badge-yellow';
+                case 'completed': return 'badge-green';
+                case 'failed': return 'badge-red';
+                default: return 'badge-blue';
+            }
+        };
+        
+        // Get badge class based on confidence score
+        const getConfidenceBadgeClass = (score) => {
+            if (score >= 0.8) return 'badge-green';
+            if (score >= 0.6) return 'badge-yellow';
+            return 'badge-red';
+        };
+        
+        // Get action icon based on action type
+        const getActionIcon = (actionType) => {
+            switch (actionType) {
+                case 'hold': return '🏠';
+                case 'refinance': return '🔄';
+                case 'sell': return '💰';
+                case 'capex': return '🔨';
+                default: return 'ℹ️';
+            }
+        };
+        
+        // Format date
+        const formatDate = (dateString) => {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+        };
+        
+        // Start optimization
+        const startOptimization = async (event) => {
+            event.preventDefault();
+            
+            const fundId = document.getElementById('fundId').value;
+            const horizonYears = parseInt(document.getElementById('horizonYears').value);
+            const minDscr = parseFloat(document.getElementById('minDscr').value);
+            const maxLeverage = parseFloat(document.getElementById('maxLeverage').value);
+            
+            // Validate inputs
+            if (!fundId || isNaN(horizonYears) || isNaN(minDscr) || isNaN(maxLeverage)) {
+                alert('Please fill in all fields with valid values');
+                return;
+            }
+            
+            // Show loading panel
+            loadingPanel.classList.remove('hidden');
+            resultsPanel.classList.add('hidden');
+            progressBar.style.width = '10%';
+            statusText.textContent = 'Starting optimization...';
+            
+            try {
+                // Call API to start optimization
+                const response = await fetch('http://localhost:8000/fund/optimize', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        fund_id: fundId,
+                        target_horizon_years: horizonYears,
+                        constraints: {
+                            min_dscr: minDscr,
+                            max_leverage: maxLeverage
+                        }
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to start optimization');
+                }
+                
+                const data = await response.json();
+                currentRunId = data.run_id;
+                
+                // Add to recent runs
+                recentRuns.unshift({
+                    id: data.run_id,
+                    status: data.status,
+                    timestamp: new Date()
+                });
+                
+                // Update recent runs list
+                updateRecentRuns();
+                
+                // Start polling for results
+                startPolling(data.run_id);
+                
+            } catch (error) {
+                console.error('Error starting optimization:', error);
+                statusText.textContent = 'Error starting optimization: ' + error.message;
+                progressBar.style.width = '0%';
+            }
+        };
+        
+        // Start polling for results
+        const startPolling = (runId) => {
+            // Clear any existing polling
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+            }
+            
+            // Set up polling
+            pollingInterval = setInterval(async () => {
+                try {
+                    await fetchOptimizationResults(runId);
+                } catch (error) {
+                    console.error('Error polling for results:', error);
+                    statusText.textContent = 'Error polling for results: ' + error.message;
+                }
+            }, 2000);
+        };
+        
+        // Fetch optimization results
+        const fetchOptimizationResults = async (runId) => {
+            const response = await fetch(`http://localhost:8000/fund/optimize/${runId}`);
+            
+            if (!response.ok) {
+                throw new Error('Failed to fetch optimization results');
+            }
+            
+            const data = await response.json();
+            
+            // Update recent runs
+            const runIndex = recentRuns.findIndex(run => run.id === runId);
+            if (runIndex !== -1) {
+                recentRuns[runIndex].status = data.status;
+                updateRecentRuns();
+            }
+            
+            // Update UI based on status
+            updateUIWithResults(data);
+            
+            // Stop polling if optimization is complete or failed
+            if (data.status === 'completed' || data.status === 'failed') {
+                clearInterval(pollingInterval);
+                pollingInterval = null;
+            }
+        };
+        
+        // Update UI with results
+        const updateUIWithResults = (data) => {
+            // Update progress bar and status text
+            switch (data.status) {
+                case 'pending':
+                    progressBar.style.width = '10%';
+                    statusText.textContent = 'Waiting to start...';
+                    break;
+                case 'running':
+                    progressBar.style.width = '50%';
+                    statusText.textContent = 'Optimizing fund...';
+                    break;
+                case 'completed':
+                    progressBar.style.width = '100%';
+                    statusText.textContent = 'Optimization complete!';
+                    loadingPanel.classList.add('hidden');
+                    resultsPanel.classList.remove('hidden');
+                    break;
+                case 'failed':
+                    progressBar.style.width = '100%';
+                    statusText.textContent = 'Optimization failed!';
+                    break;
+            }
+            
+            // Update results panel
+            document.getElementById('resultStatus').textContent = data.status.charAt(0).toUpperCase() + data.status.slice(1);
+            document.getElementById('resultStatus').className = `badge ${getStatusBadgeClass(data.status)}`;
+            
+            // Update IRR values
+            if (data.baseline_irr !== null) {
+                document.getElementById('baselineIrr').textContent = formatPercent(data.baseline_irr);
+            }
+            
+            if (data.optimized_irr !== null) {
+                document.getElementById('optimizedIrr').textContent = formatPercent(data.optimized_irr);
+            }
+            
+            if (data.baseline_irr !== null && data.optimized_irr !== null) {
+                const improvement = ((data.optimized_irr - data.baseline_irr) / data.baseline_irr);
+                document.getElementById('irrImprovement').textContent = '+' + formatPercent(improvement);
+            }
+            
+            // Update horizon and constraints
+            document.getElementById('horizon').textContent = `${data.horizon_months / 12} years (${data.horizon_months} months)`;
+            document.getElementById('constraints').textContent = `Min DSCR: ${data.constraints.min_dscr}, Max Leverage: ${data.constraints.max_leverage}`;
+            
+            // Update actions timeline
+            const actionsTimeline = document.getElementById('actionsTimeline');
+            const noActions = document.getElementById('noActions');
+            
+            if (data.actions && data.actions.length > 0) {
+                noActions.classList.add('hidden');
+                
+                // Group actions by month
+                const actionsByMonth = {};
+                data.actions.forEach(action => {
+                    const month = formatDate(action.month);
+                    if (!actionsByMonth[month]) {
+                        actionsByMonth[month] = [];
+                    }
+                    actionsByMonth[month].push(action);
+                });
+                
+                // Clear existing timeline
+                while (actionsTimeline.children.length > 1) {
+                    actionsTimeline.removeChild(actionsTimeline.lastChild);
+                }
+                
+                // Add timeline items
+                let i = 0;
+                for (const [month, actions] of Object.entries(actionsByMonth)) {
+                    const monthEl = document.createElement('div');
+                    monthEl.className = 'mb-8';
+                    
+                    // Add timeline dot
+                    const dot = document.createElement('div');
+                    dot.className = 'timeline-dot';
+                    dot.style.top = `${i * 200 + 24}px`;
+                    monthEl.appendChild(dot);
+                    
+                    // Add month heading
+                    const heading = document.createElement('h3');
+                    heading.className = 'text-lg font-bold mb-4';
+                    heading.textContent = month;
+                    monthEl.appendChild(heading);
+                    
+                    // Add actions
+                    const actionsContainer = document.createElement('div');
+                    actionsContainer.className = 'space-y-3';
+                    
+                    actions.forEach(action => {
+                        const actionEl = document.createElement('div');
+                        actionEl.className = 'card p-4 hover:border-accent transition-colors';
+                        
+                        const actionHeader = document.createElement('div');
+                        actionHeader.className = 'flex items-center justify-between';
+                        
+                        const actionType = document.createElement('div');
+                        actionType.className = 'flex items-center';
+                        
+                        const actionBadge = document.createElement('span');
+                        actionBadge.className = `badge ${getActionBadgeClass(action.action_type)} mr-3`;
+                        actionBadge.innerHTML = `${getActionIcon(action.action_type)} <span class="ml-1 capitalize">${action.action_type}</span>`;
+                        
+                        const assetId = document.createElement('span');
+                        assetId.className = 'text-gray-400';
+                        assetId.textContent = `Asset ${action.asset_id.substring(0, 8)}`;
+                        
+                        actionType.appendChild(actionBadge);
+                        actionType.appendChild(assetId);
+                        
+                        const confidenceBadge = document.createElement('span');
+                        confidenceBadge.className = `badge ${getConfidenceBadgeClass(action.confidence_score)}`;
+                        confidenceBadge.textContent = `${Math.round(action.confidence_score * 100)}% confidence`;
+                        
+                        actionHeader.appendChild(actionType);
+                        actionHeader.appendChild(confidenceBadge);
+                        
+                        actionEl.appendChild(actionHeader);
+                        
+                        // Add action details if available
+                        if (action.details) {
+                            const details = document.createElement('p');
+                            details.className = 'mt-2 text-sm text-gray-400';
+                            
+                            if (action.action_type === 'refinance' && action.details.refinance_amount) {
+                                details.textContent = `Refinance amount: ${formatCurrency(action.details.refinance_amount)}`;
+                            } else if (action.action_type === 'sell' && action.details.sale_price) {
+                                details.textContent = `Sale price: ${formatCurrency(action.details.sale_price)}`;
+                            } else if (action.action_type === 'capex' && action.details.capex_amount) {
+                                details.textContent = `CapEx amount: ${formatCurrency(action.details.capex_amount)}`;
+                            }
+                            
+                            actionEl.appendChild(details);
+                        }
+                        
+                        actionsContainer.appendChild(actionEl);
+                    });
+                    
+                    monthEl.appendChild(actionsContainer);
+                    actionsTimeline.appendChild(monthEl);
+                    i++;
+                }
+            } else {
+                noActions.classList.remove('hidden');
+            }
+        };
+        
+        // Get action badge class based on action type
+        const getActionBadgeClass = (actionType) => {
+            switch (actionType) {
+                case 'hold': return 'badge-blue';
+                case 'refinance': return 'badge-yellow';
+                case 'sell': return 'badge-green';
+                case 'capex': return 'badge-red';
+                default: return 'badge-blue';
+            }
+        };
+        
+        // Update recent runs list
+        const updateRecentRuns = () => {
+            recentRunsEl.innerHTML = '';
+            
+            if (recentRuns.length === 0) {
+                recentRunsEl.innerHTML = '<p class="text-gray-400">No recent optimizations</p>';
+                return;
+            }
+            
+            recentRuns.slice(0, 5).forEach(run => {
+                const runEl = document.createElement('div');
+                runEl.className = 'card p-3 flex justify-between items-center cursor-pointer hover:border-accent transition-colors';
+                runEl.onclick = () => loadRun(run.id);
+                
+                const runInfo = document.createElement('div');
+                
+                const runId = document.createElement('p');
+                runId.className = 'text-sm font-medium';
+                runId.textContent = run.id.substring(0, 8) + '...';
+                
+                const runTime = document.createElement('p');
+                runTime.className = 'text-xs text-gray-400';
+                runTime.textContent = run.timestamp.toLocaleString();
+                
+                runInfo.appendChild(runId);
+                runInfo.appendChild(runTime);
+                
+                const statusBadge = document.createElement('span');
+                statusBadge.className = `badge ${getStatusBadgeClass(run.status)}`;
+                statusBadge.textContent = run.status;
+                
+                runEl.appendChild(runInfo);
+                runEl.appendChild(statusBadge);
+                
+                recentRunsEl.appendChild(runEl);
+            });
+        };
+        
+        // Load a specific run
+        const loadRun = (runId) => {
+            currentRunId = runId;
+            
+            // Show loading panel
+            loadingPanel.classList.remove('hidden');
+            resultsPanel.classList.add('hidden');
+            progressBar.style.width = '50%';
+            statusText.textContent = 'Loading optimization results...';
+            
+            // Start polling for results
+            startPolling(runId);
+        };
+        
+        // Event listeners
+        optimizationForm.addEventListener('submit', startOptimization);
+    </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+.dark-card {
+  background-color: #1E222A;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.dark-card-hover {
+  background-color: #2A2E36;
+}
+
+.dark-border {
+  border-color: #2A2D35;
+}
+
+.dark-bg {
+  background-color: #0F1117;
+}
+
+.dark-bg-secondary {
+  background-color: #1A1D23;
+}
+
+.text-primary {
+  color: #FFFFFF;
+}
+
+.text-secondary {
+  color: #A0A4AE;
+}
+
+/* Accent color */
+.accent {
+  color: #36FFB0;
+}
+
+.bg-accent {
+  background-color: #36FFB0;
+}
+
+.border-accent {
+  border-color: #36FFB0;
+}
+
+.shadow-accent-glow {
+  box-shadow: 0 0 0.5rem rgba(54, 255, 176, 0.6);
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-in-out;
+}
+
+.animate-slide-in-bottom {
+  animation: slideInBottom 0.3s ease-in-out;
+}
+
+.animate-progress-bar {
+  animation: progressBar 1.5s ease-in-out;
+}
+
+.animate-bounce-subtle {
+  animation: bounceSlight 2s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  0% { transform: translateX(20px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInBottom {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes progressBar {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+@keyframes bounceSlight {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}

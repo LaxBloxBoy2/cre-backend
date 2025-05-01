@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 15, 17, 23;
+  --background-end-rgb: 26, 29, 35;
+  --card-background: 30, 34, 42;
+  --text-primary: 255, 255, 255;
+  --text-secondary: 160, 164, 174;
+  --accent: 54, 255, 176;
+}
+
+.dark {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 15, 17, 23;
+  --background-end-rgb: 26, 29, 35;
+  --card-background: 30, 34, 42;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-start-rgb));
+}
+
+/* Custom utility classes */
+.bg-dark-bg {
+  background-color: rgb(15, 17, 23);
+}
+
+.bg-dark-bg-secondary {
+  background-color: rgb(26, 29, 35);
+}
+
+.bg-dark-card {
+  background-color: rgb(30, 34, 42);
+}
+
+.bg-dark-card-hover {
+  background-color: rgb(40, 44, 52);
+}
+
+.border-dark-border {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.text-text-secondary {
+  color: rgb(160, 164, 174);
+}
+
+.text-accent {
+  color: rgb(54, 255, 176);
+}
+
+.bg-accent {
+  background-color: rgb(54, 255, 176);
+}
+
+.from-accent {
+  --tw-gradient-from: rgb(54, 255, 176);
+}
+
+.to-accent\/80 {
+  --tw-gradient-to: rgba(54, 255, 176, 0.8);
+}
+
+.shadow-accent-glow {
+  box-shadow: 0 0 10px rgba(54, 255, 176, 0.5);
+}
+
+/* Gradient backgrounds */
+.bg-gradient-to-r.from-accent-gradient-from.to-accent-gradient-to {
+  --tw-gradient-from: rgb(54, 255, 176);
+  --tw-gradient-to: rgb(17, 153, 158);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(26, 29, 35);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(40, 44, 52);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(54, 255, 176, 0.5);
+}

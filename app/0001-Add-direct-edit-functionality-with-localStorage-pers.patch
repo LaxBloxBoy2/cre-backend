@@ -1,0 +1,119 @@
+From 8514523ed43e1f6afb511b2807f89550085ed629 Mon Sep 17 00:00:00 2001
+From: QAPT Developer <developer@qapt.com>
+Date: Wed, 30 Apr 2025 18:54:36 +0200
+Subject: [PATCH] Add direct edit functionality with localStorage persistence
+
+---
+ app/contexts/ToastContext.tsx | 69 +++++++++++++++++++++--------------
+ 1 file changed, 42 insertions(+), 27 deletions(-)
+
+diff --git a/app/contexts/ToastContext.tsx b/app/contexts/ToastContext.tsx
+index 39d3417d..1163e745 100644
+--- a/app/contexts/ToastContext.tsx
++++ b/app/contexts/ToastContext.tsx
+@@ -1,54 +1,65 @@
+ 'use client';
+ 
+ import React, { createContext, useContext, useState, ReactNode } from 'react';
+-import Toast, { ToastType } from '../components/ui/Toast';
+ 
+-interface ToastMessage {
++type ToastType = 'success' | 'error' | 'warning' | 'info';
++
++interface Toast {
+   id: string;
+   message: string;
+   type: ToastType;
+ }
+ 
+-interface ToastOptions {
+-  title?: string;
+-  description: string;
+-  variant?: ToastType;
+-}
+-
+ interface ToastContextType {
+-  showToast: (options: ToastOptions) => void;
++  toasts: Toast[];
++  showToast: (message: string, type: ToastType) => void;
++  hideToast: (id: string) => void;
+ }
+ 
+-const ToastContext = createContext<ToastContextType>({ showToast: () => {} });
++const ToastContext = createContext<ToastContextType | undefined>(undefined);
+ 
+ export function ToastProvider({ children }: { children: ReactNode }) {
+-  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+-
+-  const showToast = (options: ToastOptions) => {
+-    const id = Date.now().toString();
+-    const message = options.title
+-      ? `${options.title}: ${options.description}`
+-      : options.description;
+-    const type = options.variant || 'default';
++  const [toasts, setToasts] = useState<Toast[]>([]);
+ 
++  const showToast = (message: string, type: ToastType = 'info') => {
++    const id = Math.random().toString(36).substring(2, 9);
+     setToasts((prevToasts) => [...prevToasts, { id, message, type }]);
++
++    // Auto-dismiss after 5 seconds
++    setTimeout(() => {
++      hideToast(id);
++    }, 5000);
+   };
+ 
+-  const removeToast = (id: string) => {
++  const hideToast = (id: string) => {
+     setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
+   };
+ 
+   return (
+-    <ToastContext.Provider value={{ showToast }}>
++    <ToastContext.Provider value={{ toasts, showToast, hideToast }}>
+       {children}
+-      <div className="fixed bottom-4 right-4 z-50 space-y-2">
++      <div className="fixed top-4 right-4 z-50 space-y-2">
+         {toasts.map((toast) => (
+-          <Toast
++          <div
+             key={toast.id}
+-            message={toast.message}
+-            type={toast.type}
+-            onClose={() => removeToast(toast.id)}
+-          />
++            className={`px-4 py-3 rounded-md shadow-md flex justify-between items-center transition-all duration-300 transform translate-x-0 ${
++              toast.type === 'success'
++                ? 'bg-green-500 text-white'
++                : toast.type === 'error'
++                ? 'bg-red-500 text-white'
++                : toast.type === 'warning'
++                ? 'bg-yellow-500 text-white'
++                : 'bg-blue-500 text-white'
++            }`}
++          >
++            <span>{toast.message}</span>
++            <button
++              onClick={() => hideToast(toast.id)}
++              className="ml-4 text-white hover:text-gray-200 focus:outline-none"
++            >
++              ×
++            </button>
++          </div>
+         ))}
+       </div>
+     </ToastContext.Provider>
+@@ -56,5 +67,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
+ }
+ 
+ export function useToast() {
+-  return useContext(ToastContext);
++  const context = useContext(ToastContext);
++  if (context === undefined) {
++    throw new Error('useToast must be used within a ToastProvider');
++  }
++  return context;
+ }
+-- 
+2.49.0.windows.1
+
