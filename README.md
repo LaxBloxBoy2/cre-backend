@@ -18,6 +18,13 @@ This repository contains:
 - AI components for fund optimization
 - Deployment scripts
 
+### Getting Started
+
+To get started with this repository:
+1. Clone the repository
+2. Install dependencies with `pip install -r requirements.txt`
+3. Run the server with `python backend/main.py`
+
 ## Fund Optimizer System
 
 A system that uses AI simulation and reinforcement learning to generate multi-year action plans for maximizing fund IRR while maintaining DSCR constraints.
