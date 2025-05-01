@@ -1,4 +1,12 @@
-# Fund Optimizer System
+# CRE Backend (QAPT)
+
+This is the backend repository for the CRE (Commercial Real Estate) platform, now rebranded as QAPT.
+
+## Repository Cleanup
+
+This repository has been cleaned to remove large files that were causing issues with GitHub's file size limits.
+
+## Fund Optimizer System
 
 A system that uses AI simulation and reinforcement learning to generate multi-year action plans for maximizing fund IRR while maintaining DSCR constraints.
 
