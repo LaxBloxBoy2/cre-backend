@@ -59,3 +59,11 @@ next-env.d.ts
 # Specific problematic files
 export_movementdemo_file_size_test.exe
 node_modules/@next/swc-win32-x64-msvc/next-swc.win32-x64-msvc.node
+
+# Repository cleanup files
+backup/
+clean-cre/
+clean-repo-temp/
+bfg.jar
+*.bat
+*.ps1
