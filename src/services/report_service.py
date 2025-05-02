@@ -15,7 +15,7 @@ from fastapi.responses import StreamingResponse
 from ..schemas.report_schema import ReportRequest
 from ..models.deal import Deal
 from ..models.user import User
-from .underwriting_service import _perform_underwriting_calculations, _generate_ai_summary, _get_fallback_summary
+from ..underwriting_service import _perform_underwriting_calculations, _generate_ai_summary, _get_fallback_summary
 from ..utils.logging_utils import get_logger
 
 # Get logger

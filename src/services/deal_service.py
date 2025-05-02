@@ -5,8 +5,8 @@ from fastapi import HTTPException, status
 from ..models.deal import Deal
 from ..models.user import User
 from ..schemas.deal_schema import DealRequest, ROIResponse, DealCreate, DealUpdate
-from .activity_log_service import log_action
-from .security_service import can_edit_deal
+from ..activity_log_service import log_action
+from ..security_service import can_edit_deal
 from ..utils.logging_utils import get_logger
 from ..utils.tag_utils import parse_tags
 

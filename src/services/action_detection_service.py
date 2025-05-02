@@ -6,9 +6,9 @@ from fastapi import HTTPException, status
 from ..models.deal import Deal
 from ..models.user import User
 from ..schemas.deal_schema import DealUpdate
-from .deal_service import update_deal
-from .activity_log_service import log_action
-from .report_service import generate_report
+from ..deal_service import update_deal
+from ..activity_log_service import log_action
+from ..report_service import generate_report
 from ..utils.tag_utils import parse_tags
 from ..utils.logging_utils import get_logger
 
@@ -18,30 +18,30 @@ logger = get_logger(__name__)
 def extract_action_from_reply(reply: str) -> Optional[Dict[str, Any]]:
     """
     Extract action intent from AI reply
-
+    
     Args:
         reply: The AI's reply
-
+        
     Returns:
         Dictionary with action details or None if no action detected
     """
     reply_lower = reply.lower()
-
+    
     # Check for approval action
     if any(phrase in reply_lower for phrase in ["approve this deal", "let's approve it", "recommend approval", "should be approved"]):
         return {"action": "approve"}
-
+    
     # Check for report generation action
     if any(phrase in reply_lower for phrase in ["generate report", "create a report", "prepare a report", "generate a report"]):
         return {"action": "generate_report"}
-
+    
     # Check for tag action
     tag_match = re.search(r'tag this deal as ([\w\s,\-]+)', reply_lower)
     if tag_match:
         tag_text = tag_match.group(1).strip()
         tags = [tag.strip() for tag in tag_text.split(',')]
         return {"action": "add_tag", "tags": tags}
-
+    
     # No action detected
     return None
 
@@ -55,7 +55,7 @@ async def execute_action(
 ) -> Dict[str, Any]:
     """
     Execute the detected action
-
+    
     Args:
         db: Database session
         action_data: Action data from extract_action_from_reply
@@ -63,7 +63,7 @@ async def execute_action(
         user_id: User ID
         user_role: User role
         org_id: Organization ID
-
+        
     Returns:
         Dictionary with action result
     """
@@ -71,15 +71,15 @@ async def execute_action(
     deal = db.query(Deal).filter(Deal.id == deal_id).first()
     if not deal:
         raise HTTPException(status_code=404, detail="Deal not found")
-
+    
     # Get the user
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-
+    
     # Get the action
     action = action_data.get("action")
-
+    
     # Execute the action
     if action == "approve":
         return await execute_approve_action(db, deal, user, user_role)
@@ -98,13 +98,13 @@ async def execute_approve_action(
 ) -> Dict[str, Any]:
     """
     Execute the approve action
-
+    
     Args:
         db: Database session
         deal: Deal object
         user: User object
         user_role: User role
-
+        
     Returns:
         Dictionary with action result
     """
@@ -114,24 +114,24 @@ async def execute_approve_action(
             "action_triggered": "approve",
             "status": "Permission denied: Only Managers and Admins can approve deals"
         }
-
+    
     # Check if deal is already approved
     if deal.status == "approved":
         return {
             "action_triggered": "approve",
             "status": "Deal is already approved"
         }
-
+    
     # Update deal status
     deal_update = DealUpdate(status="approved")
     updated_deal = update_deal(
-        db,
-        deal_id=deal.id,
-        deal=deal_update,
-        user_id=user.id,
+        db, 
+        deal_id=deal.id, 
+        deal=deal_update, 
+        user_id=user.id, 
         org_id=user.org_id
     )
-
+    
     # Log the action
     try:
         log_action(
@@ -145,7 +145,7 @@ async def execute_approve_action(
     except ValueError:
         # Ignore errors in activity logging
         pass
-
+    
     return {
         "action_triggered": "approve",
         "status": "Deal has been approved"
@@ -159,13 +159,13 @@ async def execute_generate_report_action(
 ) -> Dict[str, Any]:
     """
     Execute the generate report action
-
+    
     Args:
         db: Database session
         deal: Deal object
         user: User object
         user_role: User role
-
+        
     Returns:
         Dictionary with action result
     """
@@ -175,11 +175,11 @@ async def execute_generate_report_action(
             "action_triggered": "generate_report",
             "status": "Permission denied: Only Analysts, Managers, and Admins can generate reports"
         }
-
+    
     # Generate the report
     try:
         report_result = await generate_report(db, deal.id, user.id)
-
+        
         # Log the action
         try:
             log_action(
@@ -193,7 +193,7 @@ async def execute_generate_report_action(
         except ValueError:
             # Ignore errors in activity logging
             pass
-
+        
         return {
             "action_triggered": "generate_report",
             "status": "Report has been generated",
@@ -214,13 +214,13 @@ async def execute_add_tag_action(
 ) -> Dict[str, Any]:
     """
     Execute the add tag action
-
+    
     Args:
         db: Database session
         deal: Deal object
         user: User object
         tags: List of tags to add
-
+        
     Returns:
         Dictionary with action result
     """
@@ -229,30 +229,30 @@ async def execute_add_tag_action(
             "action_triggered": "add_tag",
             "status": "No tags provided"
         }
-
+    
     # Parse and normalize the tags
     normalized_tags = parse_tags(tags)
-
+    
     # Get existing tags
     existing_tags = deal.tags_list if hasattr(deal, "tags_list") else []
     if not existing_tags and deal.tags:
         existing_tags = deal.tags.split(",")
-
+    
     # Merge with new tags
     merged_tags = list(set(existing_tags + normalized_tags))
-
+    
     # Create a DealUpdate with the merged tags
     deal_update = DealUpdate(tags=merged_tags)
-
+    
     # Update the deal
     updated_deal = update_deal(
-        db,
-        deal_id=deal.id,
-        deal=deal_update,
-        user_id=user.id,
+        db, 
+        deal_id=deal.id, 
+        deal=deal_update, 
+        user_id=user.id, 
         org_id=user.org_id
     )
-
+    
     # Log the action
     try:
         log_action(
@@ -266,7 +266,7 @@ async def execute_add_tag_action(
     except ValueError:
         # Ignore errors in activity logging
         pass
-
+    
     return {
         "action_triggered": "add_tag",
         "status": f"Tags added: {', '.join(normalized_tags)}"

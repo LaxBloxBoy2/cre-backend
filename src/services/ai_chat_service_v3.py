@@ -4,7 +4,7 @@ import requests
 from fastapi import HTTPException
 from typing import Dict, Any, List, Optional
 from ..schemas.ai_chat_schema import AIChatRequest, AIChatResponse, ConversationalAIChatRequest, ConversationalAIChatResponse, ChatMessage
-from .enhanced_ai_chat_service import detect_user_intent
+from ..enhanced_ai_chat_service import detect_user_intent
 
 async def process_ai_chat_v3(request: ConversationalAIChatRequest, debug_mode: bool = False) -> Dict[str, Any]:
     """
